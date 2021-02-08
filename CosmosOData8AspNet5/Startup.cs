@@ -21,7 +21,7 @@ namespace CosmosOData8AspNet5
 	public class Startup
 	{
 		public static readonly string CosmosAccountEndpoint = "https://localhost:8081";
-		public static readonly string CosmosAccountKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
+		public static readonly string CosmosAccountKey = "{YOUR-KEY-HERE}";
 		public static readonly string CosmosDb = "demodb";
 		public static readonly string CosmosContainer = "democontainer";
 
