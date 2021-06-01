@@ -1,20 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
-using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CosmosOData8AspNet5
 {
@@ -36,10 +28,9 @@ namespace CosmosOData8AspNet5
 		{
 			services.AddControllers();
 
-			services.AddOData(opt => opt.AddModel("odata", GetEdmModel())
-				.Filter()
-				.Select()
-				.Expand());
+			services.AddControllers().AddOData(
+				opt => opt.Count().Filter().Expand().Select()
+					.AddModel(GetEdmModel()));
 
 			services.AddSingleton(sp =>
 			{
@@ -51,6 +42,8 @@ namespace CosmosOData8AspNet5
 					}
 				});
 			});
+
+			services.AddSwaggerGen();
 		}
 
 		private static IEdmModel GetEdmModel()
@@ -68,6 +61,18 @@ namespace CosmosOData8AspNet5
 			}
 
 			app.UseHttpsRedirection();
+
+			// Use odata route debug, /$odata
+			app.UseODataRouteDebug();
+
+			// Add OData /$query middleware
+			app.UseODataQueryRequest();
+
+			app.UseSwagger();
+			app.UseSwaggerUI(c =>
+			{
+				c.SwaggerEndpoint("/swagger/v1/swagger.json", "OData 8.x OpenAPI");
+			});
 
 			app.UseRouting();
 
